@@ -28,16 +28,16 @@ public class GunBehavior : MonoBehaviour {
             int randInt = Mathf.FloorToInt(Random.Range(0, 7));
             // Find the direction pointing from our position to the target
             _direction = (Horses[randInt].position - PivotPoint.position).normalized;
-
-            // Calculate the rotation
-            _lookRotation = Quaternion.LookRotation(_direction);
-
-            // Pivot around parent object
-            PivotPoint.rotation = Quaternion.Slerp(PivotPoint.rotation, _lookRotation, Time.deltaTime * RotationSpeed);
-
-            // Fire at whatever horse we were looking at
-
         }
+
+        // Calculate the rotation
+        _lookRotation = Quaternion.LookRotation(_direction);
+
+        // Pivot around parent object
+        PivotPoint.rotation = Quaternion.Slerp(PivotPoint.rotation, _lookRotation, Time.deltaTime * RotationSpeed);
+
+        // Fire at whatever horse we were looking at
+
     }
     void Fire(Transform target, float deltaTime)
     {
