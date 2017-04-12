@@ -14,34 +14,47 @@ public class GunBehavior : MonoBehaviour {
     Vector3 _direction;
     Quaternion _lookRotation;
     float _delayTimer;
+    int _currentTarget;
+    bool _projectileActive = false;
+    GameObject _activeProjectile;
+    int _horseMask;
 
 	// Use this for initialization
 	void Start () {
+        _delayTimer = TimeDelay;
+        _horseMask = LayerMask.GetMask("Horse");
 	}
 	
 	// Update is called once per frame
 	void Update () {
         _delayTimer += Time.deltaTime;
-        if (_delayTimer >= TimeDelay)
+        if (_delayTimer >= TimeDelay && _projectileActive == true)
         {
             _delayTimer -= TimeDelay;
-            int randInt = Mathf.FloorToInt(Random.Range(0, 7));
-            // Find the direction pointing from our position to the target
-            _direction = (Horses[randInt].position - PivotPoint.position).normalized;
+            _currentTarget = Mathf.FloorToInt(Random.Range(0, 7));
+            _projectileActive = false;  
         }
+        // Find the direction pointing from our position to the target
+        _direction = (Horses[_currentTarget].GetComponent<Renderer>().bounds.center - MuzzlePoint.position).normalized;
 
         // Calculate the rotation
         _lookRotation = Quaternion.LookRotation(_direction);
 
         // Pivot around parent object
-        PivotPoint.rotation = Quaternion.Slerp(PivotPoint.rotation, _lookRotation, Time.deltaTime * RotationSpeed);
+        PivotPoint.rotation = Quaternion.Lerp(PivotPoint.rotation, _lookRotation, Time.deltaTime * RotationSpeed);
 
-        // Fire at whatever horse we were looking at
+        Debug.DrawLine(MuzzlePoint.position, Horses[_currentTarget].GetComponent<Renderer>().bounds.center);
 
-    }
-    void Fire(Transform target, float deltaTime)
-    {
-        var proj = GameObject.Instantiate<GameObject>(Projectile, MuzzlePoint);
-        proj.transform.position = Vector3.Lerp(proj.transform.position, target.position, deltaTime * ProjectileSpeed);
+        //Raycast
+        RaycastHit rHit;
+        Physics.Raycast(MuzzlePoint.position, _direction, out rHit, 2000.0f, _horseMask);
+
+        if (rHit.transform == Horses[_currentTarget] && !_projectileActive && PivotPoint.rotation == _lookRotation)
+        {
+            _activeProjectile = Instantiate(Projectile, MuzzlePoint.position, Quaternion.identity);
+            if (_activeProjectile.GetComponent<ProjectileScript>() == null) { Debug.Log("No projectile script on Projectile."); }
+            else { _activeProjectile.GetComponent<ProjectileScript>().Fire(Horses[_currentTarget]); }
+            _projectileActive = true;
+        }
     }
 }
