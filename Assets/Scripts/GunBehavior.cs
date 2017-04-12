@@ -7,7 +7,6 @@ public class GunBehavior : MonoBehaviour {
     public Transform PivotPoint;
     public Transform MuzzlePoint;
     public GameObject Projectile;
-    public float ProjectileSpeed;
     public float RotationSpeed;
     public float TimeDelay;
 
@@ -18,6 +17,7 @@ public class GunBehavior : MonoBehaviour {
     bool _projectileActive = false;
     GameObject _activeProjectile;
     int _horseMask;
+    bool _gameRunning = true;
 
 	// Use this for initialization
 	void Start () {
@@ -27,6 +27,11 @@ public class GunBehavior : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if (!_gameRunning)
+        {
+            return;
+        }
+
         _delayTimer += Time.deltaTime;
         if (_delayTimer >= TimeDelay && _projectileActive == true)
         {
@@ -34,6 +39,7 @@ public class GunBehavior : MonoBehaviour {
             _currentTarget = Mathf.FloorToInt(Random.Range(0, 7));
             _projectileActive = false;  
         }
+
         // Find the direction pointing from our position to the target
         _direction = (Horses[_currentTarget].GetComponent<Renderer>().bounds.center - MuzzlePoint.position).normalized;
 
@@ -56,5 +62,9 @@ public class GunBehavior : MonoBehaviour {
             else { _activeProjectile.GetComponent<ProjectileScript>().Fire(Horses[_currentTarget]); }
             _projectileActive = true;
         }
+    }
+    public void StopGame()
+    {
+        _gameRunning = false;
     }
 }
