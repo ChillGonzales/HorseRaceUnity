@@ -40,6 +40,7 @@ public class ProjectileScript : MonoBehaviour {
     {
         _particles = Instantiate(DeathParticle, gameObject.transform);
         _particles.Play();
+        gameObject.GetComponent<Renderer>().enabled = false;
         _targetTransform.GetComponent<HorseBehavior>().Hit();
         yield return new WaitForSeconds(2.0f);
         Destroy(gameObject);
