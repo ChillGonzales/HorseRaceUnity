@@ -50,11 +50,12 @@ public class GunBehavior : MonoBehaviour {
         // Pivot around parent object
         PivotPoint.rotation = Quaternion.Lerp(PivotPoint.rotation, _lookRotation, Time.deltaTime * RotationSpeed);
 
-        Debug.DrawLine(MuzzlePoint.position, Targets[_currentTarget].GetComponent<Renderer>().bounds.center, Color.magenta);
+        //Debug.DrawLine(MuzzlePoint.position, Targets[_currentTarget].GetComponent<Renderer>().bounds.center, Color.magenta);
 
         //Raycast
         RaycastHit rHit;
-        Physics.Raycast(MuzzlePoint.position, _direction, out rHit, 2000.0f, _targetMask);
+        Physics.Raycast(MuzzlePoint.position, _direction, out rHit, 100.0f, _targetMask);
+        Debug.DrawRay(MuzzlePoint.position, _direction, Color.magenta);
 
         if (rHit.transform == Targets[_currentTarget] && !_projectileActive && PivotPoint.rotation == _lookRotation)
         {

@@ -21,6 +21,7 @@ public class ProjectileScript : MonoBehaviour {
         if (_firing)
         {
             transform.position = Vector3.Lerp(transform.position, _target, Time.deltaTime * MovementSpeed);
+
             _aliveTimer += Time.deltaTime;
             if (_aliveTimer >= TimeAlive)
             {
@@ -32,7 +33,7 @@ public class ProjectileScript : MonoBehaviour {
     {
         _firing = true;
         var center = target.GetComponent<Renderer>().bounds.center;
-        _target = new Vector3(center.x, center.y + 10, center.z);
+        _target = new Vector3(center.x, center.y, center.z);
                               
         _targetTransform = target;  
     }
@@ -41,7 +42,7 @@ public class ProjectileScript : MonoBehaviour {
         _particles = Instantiate(DeathParticle, gameObject.transform);
         _particles.Play();
         gameObject.GetComponent<Renderer>().enabled = false;
-        _targetTransform.GetComponent<HorseBehavior>().Hit();
+        _targetTransform.parent.GetComponent<TargetBehavior>().Hit();
         yield return new WaitForSeconds(2.0f);
         Destroy(gameObject);
     }
