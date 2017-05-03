@@ -57,7 +57,7 @@ public class GunBehavior : MonoBehaviour {
         Physics.Raycast(MuzzlePoint.position, _direction, out rHit, 100.0f, _targetMask);
         Debug.DrawRay(MuzzlePoint.position, _direction, Color.magenta);
 
-        if (rHit.transform == Targets[_currentTarget] && !_projectileActive && PivotPoint.rotation == _lookRotation)
+
         {
             _activeProjectile = Instantiate(Projectile, MuzzlePoint.position, Quaternion.identity);
             if (_activeProjectile.GetComponent<ProjectileScript>() == null) { Debug.Log("No projectile script on Projectile."); }
